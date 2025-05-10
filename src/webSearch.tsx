@@ -5,6 +5,7 @@ import {
   Inline,
 } from "@project-gauntlet/api/components";
 import { ReactNode } from "react";
+import * as deno_open from "@opensrc/deno-open";
 
 export default function webSearch(props: {
   text: string;
@@ -33,18 +34,12 @@ export default function webSearch(props: {
           <Action
             label={"Web search"}
             onAction={async () => {
+              console.log("action");
               try {
-                console.log("open web search");
-
-                const cmd = new Deno.Command("xdg-open", {
+                const command = new Deno.Command("xdg-open", {
                   args: [searchUrl],
-                  env: {
-                    LD_LIBRARY_PATH: "",
-                  },
                 });
-
-                console.log("cmd", await cmd.output());
-                cmd.spawn();
+                const child = await command.spawn();
               } catch (e) {
                 console.error("Error opening web search:", e);
               }

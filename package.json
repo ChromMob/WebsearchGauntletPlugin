@@ -6,6 +6,7 @@
     "dev": "gauntlet dev"
   },
   "dependencies": {
+    "@opensrc/deno-open": "npm:@jsr/opensrc__deno-open@^1.0.0",
     "@project-gauntlet/api": "0.14.0"
   },
   "devDependencies": {

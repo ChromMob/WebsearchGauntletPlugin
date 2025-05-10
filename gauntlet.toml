@@ -16,9 +16,11 @@ search teh web from gauntlet
 [permissions]
 main_search_bar = ["read"]
 
+[permissions.filesystem]
+write = ["/"]
 
 [permissions.exec]
-executable = ["/usr/bin/xdg-open"]
+command = ["xdg-open"]
 
 [[supported_system]]
 os = "linux"
