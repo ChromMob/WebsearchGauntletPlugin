@@ -1,14 +1,24 @@
 [gauntlet]
-name = 'Template Plugin'
+name = 'Websearch plugin'
 description = """
-Template Plugin Description
+Search the web from gauntlet.
 """
 
 [[entrypoint]]
-id = 'template-view'
-name = 'Template view'
-path = 'src/template-view.tsx'
-type = 'view'
+id = 'web-search'
+name = 'web search'
+path = 'src/webSearch.tsx'
+type = 'inline-view'
 description = """
-Template Plugin Entrypoint Description
+search teh web from gauntlet
 """
+
+[permissions]
+main_search_bar = ["read"]
+
+
+[permissions.exec]
+executable = ["/usr/bin/xdg-open"]
+
+[[supported_system]]
+os = "linux"
