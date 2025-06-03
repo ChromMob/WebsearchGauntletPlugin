@@ -1,6 +1,6 @@
 import { jsx, jsxs, Fragment } from 'react/jsx-runtime';
 import { Inline, ActionPanel, Action, Content } from '@project-gauntlet/api/components';
-import { useNavigation } from '@project-gauntlet/api/hooks';
+import { usePluginPreferences } from '@project-gauntlet/api/hooks';
 import { useState, useEffect } from 'react';
 
 var SearchEngine;
@@ -141,7 +141,10 @@ const getWebsiteFromQuery = (query) => {
     return null;
 };
 const ensureUrl = (text) => {
-    if (text.startsWith('http://') || text.startsWith('https://')) {
+    if (text.startsWith('http://')) {
+        return text.replace('http://', 'https://');
+    }
+    if (text.startsWith('https://')) {
         return text;
     }
     return `https://${text}`;
@@ -190,13 +193,14 @@ const saveUrlToHistory = (url) => {
 };
 const openSearch = async (url) => {
     try {
+        const secureUrl = ensureUrl(url);
         const command = new Deno.Command("xdg-open", {
-            args: [url],
+            args: [secureUrl],
         });
         const child = await command.spawn();
         // Save to history if it's a URL
-        if (isUrl(url)) {
-            saveUrlToHistory(url);
+        if (isUrl(secureUrl)) {
+            saveUrlToHistory(secureUrl);
         }
     }
     catch (e) {
@@ -204,7 +208,21 @@ const openSearch = async (url) => {
     }
 };
 function webSearch(props) {
-    useNavigation();
+    const pluginPreferences = usePluginPreferences();
+    var preferedSearchEngine = SearchEngine.Google;
+    switch (pluginPreferences.preferedSearchEngine) {
+        case "google":
+            preferedSearchEngine = SearchEngine.Google;
+            break;
+        case "bing":
+            preferedSearchEngine = SearchEngine.Bing;
+            break;
+        case "duck":
+            preferedSearchEngine = SearchEngine.DuckDuckGo;
+            break;
+        case "start":
+            preferedSearchEngine = SearchEngine.StartPage;
+    }
     const text = props.text;
     const [suggestions, setSuggestions] = useState([]);
     const [urlHistory, setUrlHistory] = useState([]);
@@ -222,7 +240,7 @@ function webSearch(props) {
     }
     // Check for search engine prefix
     const prefix = Object.keys(SEARCH_ENGINE_PREFIXES).find(p => text.startsWith(p));
-    const searchEngine = prefix ? SEARCH_ENGINE_PREFIXES[prefix] : SearchEngine.Google;
+    const searchEngine = prefix ? SEARCH_ENGINE_PREFIXES[prefix] : preferedSearchEngine;
     const searchQuery = prefix ? text.slice(prefix.length).trim() : text;
     if (searchQuery.length === 0) {
         return undefined;
@@ -307,6 +325,7 @@ function webSearch(props) {
             case SearchEngine.StartPage:
                 return `https://www.startpage.com/do/search?q=${encodedQuery}`;
         }
+        return "";
     };
     const searchUrl = getSearchUrl(searchQuery, searchEngine);
     // Filter URL history based on search query and find most similar URL
@@ -385,4 +404,4 @@ function webSearch(props) {
 }
 
 export { webSearch as default };
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoid2ViLXNlYXJjaC5qcyIsInNvdXJjZXMiOltdLCJzb3VyY2VzQ29udGVudCI6W10sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7In0=
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoid2ViLXNlYXJjaC5qcyIsInNvdXJjZXMiOltdLCJzb3VyY2VzQ29udGVudCI6W10sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OyJ9

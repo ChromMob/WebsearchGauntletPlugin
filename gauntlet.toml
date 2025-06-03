@@ -13,6 +13,19 @@ description = """
 Search the web using Google, DuckDuckGo, or StartPage. Supports direct URL opening, search suggestions, and URL history.
 """
 
+[[preferences]]
+id = "preferedSearchEngine"
+name = "Prefered search engine"
+type = "enum"
+default = "google"
+description = "Which search engine to use by default"
+enum_values = [
+    { label = 'Google', value = 'google' },
+    { label = 'DuckDuckGo', value = 'duck' },
+    { label = 'StartPage', value = 'start' },
+    { label = 'Bing', value = 'bing' }
+]
+
 [permissions]
 main_search_bar = ["read"]
 network = ["suggestqueries.google.com:443", "api.duckduckgo.com:443"]
