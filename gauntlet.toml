@@ -4,16 +4,13 @@ description = """
 Search the web from gauntlet.
 """
 
-[authors]
-name = ["ChromMob"]
-
 [[entrypoint]]
 id = 'web-search'
 name = 'web search'
 path = 'src/webSearch.tsx'
 type = 'inline-view'
 description = """
-search teh web from gauntlet
+Search the web using Google, DuckDuckGo, or StartPage. Supports direct URL opening, search suggestions, and URL history.
 """
 
 [permissions]
