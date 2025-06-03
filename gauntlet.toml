@@ -4,6 +4,9 @@ description = """
 Search the web from gauntlet.
 """
 
+[authors]
+name = ["ChromMob"]
+
 [[entrypoint]]
 id = 'web-search'
 name = 'web search'
@@ -15,6 +18,7 @@ search teh web from gauntlet
 
 [permissions]
 main_search_bar = ["read"]
+network = ["suggestqueries.google.com:443", "api.duckduckgo.com:443"]
 
 [permissions.filesystem]
 write = ["/"]

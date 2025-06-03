@@ -1,5 +1,5 @@
 {
-  "name": "plugin-template",
+  "name": "websearch-plugin",
   "scripts": {
     "publish": "gauntlet publish",
     "build": "gauntlet build",
