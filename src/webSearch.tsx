@@ -3,11 +3,13 @@ import {
   ActionPanel,
   Content,
   Inline,
-  List,
 } from "@project-gauntlet/api/components";
-import { useNavigation } from "@project-gauntlet/api/hooks";
-import { ReactElement, ReactNode, useEffect, useState } from "react";
-import * as deno_open from "@opensrc/deno-open";
+import { usePluginPreferences } from "@project-gauntlet/api/hooks";
+import { ReactNode, useEffect, useState } from "react";
+
+interface PluginPreferences { 
+  preferedSearchEngine: string
+}
 
 enum SearchEngine {
   Google = "google",
@@ -155,7 +157,10 @@ const getWebsiteFromQuery = (query: string): string | null => {
 };
 
 const ensureUrl = (text: string): string => {
-  if (text.startsWith('http://') || text.startsWith('https://')) {
+  if (text.startsWith('http://')) {
+    return text.replace('http://', 'https://');
+  }
+  if (text.startsWith('https://')) {
     return text;
   }
   return `https://${text}`;
@@ -210,13 +215,14 @@ const saveUrlToHistory = (url: string) => {
 
 const openSearch = async (url: string) => {
   try {
+    const secureUrl = ensureUrl(url);
     const command = new Deno.Command("xdg-open", {
-      args: [url],
+      args: [secureUrl],
     });
     const child = await command.spawn();
     // Save to history if it's a URL
-    if (isUrl(url)) {
-      saveUrlToHistory(url);
+    if (isUrl(secureUrl)) {
+      saveUrlToHistory(secureUrl);
     }
   } catch (e) {
     console.error("Error opening web search:", e);
@@ -226,9 +232,21 @@ const openSearch = async (url: string) => {
 export default function webSearch(props: {
   text: string;
 }): ReactNode | undefined {
-
-  const { pushView } = useNavigation();
-
+  const pluginPreferences = usePluginPreferences<PluginPreferences>();
+  var preferedSearchEngine = SearchEngine.Google;
+  switch (pluginPreferences.preferedSearchEngine) {
+    case "google":
+      preferedSearchEngine = SearchEngine.Google;
+      break;
+    case "bing":
+      preferedSearchEngine = SearchEngine.Bing;
+      break;
+    case "duck":
+      preferedSearchEngine = SearchEngine.DuckDuckGo;
+      break;
+    case "start":
+      preferedSearchEngine = SearchEngine.StartPage;
+  }
 
   const text = props.text;
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -266,7 +284,7 @@ export default function webSearch(props: {
 
   // Check for search engine prefix
   const prefix = Object.keys(SEARCH_ENGINE_PREFIXES).find(p => text.startsWith(p));
-  const searchEngine = prefix ? SEARCH_ENGINE_PREFIXES[prefix] : SearchEngine.Google;
+  const searchEngine = prefix ? SEARCH_ENGINE_PREFIXES[prefix] : preferedSearchEngine;
   const searchQuery = prefix ? text.slice(prefix.length).trim() : text;
 
   if (searchQuery.length === 0) {
@@ -366,6 +384,7 @@ export default function webSearch(props: {
       case SearchEngine.StartPage:
         return `https://www.startpage.com/do/search?q=${encodedQuery}`;
     }
+    return "";
   };
 
   const searchUrl = getSearchUrl(searchQuery, searchEngine);
