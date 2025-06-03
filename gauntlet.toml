@@ -10,11 +10,12 @@ name = 'web search'
 path = 'src/webSearch.tsx'
 type = 'inline-view'
 description = """
-search teh web from gauntlet
+Search the web using Google, DuckDuckGo, or StartPage. Supports direct URL opening, search suggestions, and URL history.
 """
 
 [permissions]
 main_search_bar = ["read"]
+network = ["suggestqueries.google.com:443", "api.duckduckgo.com:443"]
 
 [permissions.filesystem]
 write = ["/"]
