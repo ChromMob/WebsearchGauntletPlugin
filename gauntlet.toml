@@ -1,0 +1,26 @@
+[gauntlet]
+name = 'Websearch plugin'
+description = """
+Search the web from gauntlet.
+"""
+
+[[entrypoint]]
+id = 'web-search'
+name = 'web search'
+path = 'src/webSearch.tsx'
+type = 'inline-view'
+description = """
+search teh web from gauntlet
+"""
+
+[permissions]
+main_search_bar = ["read"]
+
+[permissions.filesystem]
+write = ["/"]
+
+[permissions.exec]
+command = ["xdg-open"]
+
+[[supported_system]]
+os = "linux"
